@@ -43,10 +43,10 @@ function swf_bar($values,$width,$height,$divid,$stack) {
    fo.addParam("wmode", "transparent");
 //   fo.addParam("salign", "t");
 	<?php
-		$variables = split("&",$values);
+		$variables = explode("&",$values);
 		foreach ($variables as $deauna) {
 			echo "//$deauna\n";
-			$pedazos = split("=",$deauna);
+			$pedazos = explode("=",$deauna);
 			echo "fo.addVariable('".$pedazos[0]."','".$pedazos[1]."');\n";
 		}
 	?>

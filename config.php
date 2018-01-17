@@ -1,32 +1,58 @@
 <?php
-require_once("dblib.php");
+// set debug
+$debug = false;
+
+// set error reporting
+if($debug){
+	error_reporting(E_ALL);
+} else {
+	error_reporting(E_ALL & ~ (E_NOTICE | E_WARNING | E_DEPRECATED));
+}
+
+// require database.class.php
+require_once('database.class.php');
+
+// require misc.php
 require_once("misc.php");
 
-// Credentials for MYSQL database
-$dbhost = 'localhost';
-$dbname = 'qstatslite';
-$dbuser = 'root';
-$dbpass = '';
+// define languages
+$languages = ['en', 'es', 'ru', 'de', 'fr'];
 
-// Credentials for AMI (for the realtime tab to work)
-// See /etc/asterisk/manager.conf
+// define $language
+$language = $language[[0]];
 
-$manager_host   = "127.0.0.1";
-$manager_user   = "admin";
-$manager_secret = "amp111";
-
-// Available languages "es", "en", "ru", "de", "fr"
-$language = "en";
-
+// require english language defaults
 require_once("lang/$language.php");
 
-$midb = conecta_db($dbhost,$dbname,$dbuser,$dbpass);
+// asternic storage / database configuration
+[$dbhost, $dbname, $dbuser, $dbpass] = ['127.0.0.1', 'qstats', 'asterisk', 'password'];
+
+// asterisk /etc/asterisk/manager.conf AMI credentials
+[$manager_host, $manager_user, $manager_secret] = ['127.0.0.1', 'admin', 'password'];
+
+// define $datbase
+$database = new AsternicDB([$dbhost, $dbname, $dbuser, $dbpass]);
+
+try {
+	// connect to database
+	if(!$database->connect()){
+		// unsuccessful connection
+	}
+} catch(\Exception $e){
+	echo 'Exception Occurred: ' . $e->getMessage() . "\n";
+}
+
+// define $midb
+$midb = $database;
+
+// define $self
 $self = $_SERVER['PHP_SELF'];
 
-$DB_DEBUG = false; 
-
+// initialize session data
 session_start();
-//session_register("QSTATS");
-header('content-type: text/html; charset: utf-8'); 
 
+//session_register("QSTATS");
+
+// send content-type header
+header('content-type: text/html; charset: utf-8'); 
 ?>

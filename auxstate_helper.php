@@ -47,7 +47,9 @@ $am->connect($manager_host,$manager_user,$manager_secret);
 $channels = get_channels ($am);
 //echo "<pre>";print_r($channels);echo "</pre>";
 foreach($channels as $ch=>$chv) {
-  list($chan,$ses) = split("-",$ch,2);
+ // list($chan,$ses) = explode("-",$ch,2);
+[$chan, $ses] = explode('-', $ch);
+
   $inuse["$chan"]=$ch;
 }
 

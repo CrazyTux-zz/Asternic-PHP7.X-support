@@ -64,10 +64,13 @@ $query.= "GROUP BY ev.event ORDER BY ev.event";
 
 $hangup_cause["COMPLETECALLER"]=0;
 $hangup_cause["COMPLETEAGENT"]=0;
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
-while($row=db_fetch_row($res)) {
-  $hangup_cause["$row[1]"]=$row[0];
-  $total_hangup+=$row[0];
+// define $res
+$res = $database->query($query);
+
+while($row = $res->fetch_row()){
+
+  $hangup_cause[$row[1]] = $row[0];
+  $total_hangup += $row[0];
 }
 
 
@@ -95,9 +98,9 @@ $total_calls2      = Array();
 $total_duration    = 0;
 $total_calls_queue = Array();
 
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
+$res = $database->query($query);
 if($res) {
-    while($row=db_fetch_row($res)) {
+    while($row=$res->fetch_row()){
         if($row[3] <> "TRANSFER" && $row[3]<>"CONNECT") {
             $total_hold     += $row[4];
             $total_duration += $row[5];
@@ -159,9 +162,9 @@ $query.= "AND qs.qname = q.qname_id AND ag.agent_id = qs.qagent AND qs.datetime 
 $query.= "AND qs.datetime <= '$end' AND  q.queue IN ($queue)  AND ag.agent in ($agent) AND  ac.event = 'TRANSFER'";
 
 
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
+$res = $database->query($query);
 if($res) {
-    while($row=db_fetch_row($res)) {
+    while($row=$res->fetch_row()) {
         $keytra = "$row[0]^$row[1]@$row[2]";
         $transfers["$keytra"]++;
         $totaltransfers++;
@@ -177,9 +180,9 @@ $query.= "qs.qevent = ac.event_id AND qs.qname = q.qname_id AND qs.datetime >= '
 $query.= "qs.datetime <= '$end' AND  q.queue IN ($queue)  AND ag.agent in ($agent) AND  ac.event IN ('ABANDON', 'EXITWITHTIMEOUT', 'TRANSFER') ";
 $query.= "ORDER BY  ac.event,  qs.info3";
 
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
+$res = $database->query($query);
 
-while($row=db_fetch_row($res)) {
+while($row=$res->fetch_row()) {
 
     if($row[0]=="ABANDON") {
          $abandoned++;
@@ -218,8 +221,8 @@ $query.= "qagent AS ag, qevent AS ac WHERE qs.qname = q.qname_id AND qs.qagent =
 $query.= "qs.qevent = ac.event_id AND qs.datetime >= '$start' AND qs.datetime <= '$end' AND ";
 $query.= "q.queue IN ($queue) AND ag.agent in ($agent) AND ac.event IN ('COMPLETECALLER', 'COMPLETEAGENT') ORDER BY ag.agent";
 
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
-while($row=db_fetch_row($res)) {
+$res = $database->query($query);
+while($row=$res->fetch_row()) {
     $total_calls2["$row[2]"]++;
     $record["$row[2]"][]=$row[0]."|".$row[1]."|".$row[3]."|".$row[4];
     $total_hold2["$row[2]"]+=$row[4];
@@ -229,8 +232,8 @@ while($row=db_fetch_row($res)) {
     $grandtotal_calls++;
 }
 
-$start_parts = split(" ", $start);
-$end_parts   = split(" ", $end);
+$start_parts = explode(" ", $start);
+$end_parts   = explode(" ", $end);
 
 $cover_pdf = $lang["$language"]['queue'].": ".$queue."\n";
 $cover_pdf.= $lang["$language"]['start'].": ".$start_parts[0]."\n";
@@ -621,7 +624,7 @@ $cover_pdf.= $lang["$language"]['avg_holdtime'].": ".$average_hold." ".$lang["$l
             <TBODY>
             <?php
             foreach($transfers as $key=>$val) {
-                $partes = split("\^",$key);
+                $partes = explode("\^",$key);
                 $agent = $partes[0];
                 $extension = $partes[1];
                 echo "<TR>\n";

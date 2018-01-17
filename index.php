@@ -64,14 +64,14 @@ $end_month_ts -= 86400;
 $end_month = date('Y-m-d',$end_month_ts);
 
 $query = "SELECT queue FROM qname ORDER BY queue";
-$res = consulta_db($query,0,0);
-while ($row = db_fetch_row($res)) {
+$res = $database->query($query);
+while ($row = $res->fetch_row()) {
   $colas[] = $row[0];
 }
 
 $query = "SELECT agent FROM qagent ORDER BY agent";
-$res = consulta_db($query,0,0);
-while ($row = db_fetch_row($res)) {
+$res = $database->query($query);
+while ($row = $res->fetch_row()) {
   $agentes[] = $row[0];
 }
 

@@ -1,4 +1,5 @@
 <?php
+require_once('dblib.php');
 /*
    Copyright 2007, 2008 Nicolás Gudiño
 
@@ -87,7 +88,9 @@ foreach($queue as $qn) {
                     if($aval=="busy") $aval="not in use";
                 }
 
-                $aval2 = ereg_replace(" ","_",$aval);
+                //$aval2 = ereg_replace(" ", "_", $aval);
+				$aval2 = implode('_', explode(' ', $aval));
+
                 $mystringaval = $lang[$language][$aval2];
 				if($mystringaval=="") $mystringaval = $aval;
                 echo "<td><div style='float: left; background: ".$color[$aval]."; width: 1em;'>&nbsp;</div>&nbsp; $mystringaval";

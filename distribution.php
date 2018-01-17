@@ -75,13 +75,14 @@ $login_by_day   = Array();
 $login_by_hour  = Array();
 $login_by_dw    = Array();
 
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
+$res = $database->query($query);
 
-if(db_num_rows($res)>0) {
+if($res->num_rows){
 
-	while($row=db_fetch_row($res)) {
-		$partes_fecha = split(" ",$row[0]);
-		$partes_hora  = split(":",$partes_fecha[1]);
+	while($row=$res->fetch_row()) {
+		//var_dump($row);
+		$partes_fecha = explode(" ",$row[0]);
+		$partes_hora  = explode(":",$partes_fecha[1]);
 
 		$timestamp = return_timestamp($row[0]);
 		$day_of_week = date('w',$timestamp);
@@ -135,8 +136,8 @@ if(db_num_rows($res)>0) {
 }
 
 
-$start_parts = split(" ", $start);
-$end_parts   = split(" ", $end);
+$start_parts = explode(" ", $start);
+$end_parts   = explode(" ", $end);
 
 $cover_pdf = $lang["$language"]['queue'].": ".$queue."\n";
 $cover_pdf.= $lang["$language"]['start'].": ".$start_parts[0]."\n";

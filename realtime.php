@@ -76,11 +76,10 @@ if(isset($_SESSION['QSTATS']['hideloggedoff'])) {
 <?php
 echo "<h2>".$lang[$language]['current_agent_status']."</h2>";
 
-/*
 // Populates an array with the EVENTS ids
 $query = "SELECT * FROM qevent ORDER BY event_id";
-$res = consulta_db($query,0,0);
-while($row = db_fetch_row($res)) {
+$res = $database->query($query);
+while($row = $res->fetch_row()){
         $event_array["$row[0]"] = $row[1];
 }
 
@@ -101,7 +100,6 @@ for($a=1;$a<10;$a++) {
     $b=$a-1;
     $popup["$a"]=$aux[$b];
 }
-*/
 ?>
 
 <div id='content_refresh'>

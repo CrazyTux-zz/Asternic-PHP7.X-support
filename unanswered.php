@@ -20,6 +20,7 @@
 */
 
 require_once("config.php");
+require_once('dblib.php');
 include("sesvars.php");
 ?>
 <!-- http://www.house.com.ar/quirksmode -->
@@ -62,15 +63,15 @@ $query.= "qs.info1 AS info1, qs.info2 AS info2,  qs.info3 AS info3 FROM queue_st
 $query.= "qagent AS ag, qevent AS ac WHERE qs.qname = q.qname_id AND qs.qagent = ag.agent_id AND ";
 $query.= "qs.qevent = ac.event_id AND qs.datetime >= '$start' AND qs.datetime <= '$end' ";
 $query.= "AND q.queue IN ($queue) AND ac.event IN ('ABANDON', 'EXITWITHTIMEOUT') ORDER BY qs.datetime";
-$res = consulta_db($query,$DB_DEBUG,$DB_MUERE);
+$res = $database->query($query);
 
 $abandon_calls_queue = Array();
 $abandon=0;
 $timeout=0;
 
-if(db_num_rows($res)>0) {
+if($res->num_rows){
 
-while($row=db_fetch_row($res)) {
+while($row=$res->fetch_row()){
 
 	if($row[3]=="ABANDON") {
  		$abandoned++;
@@ -118,8 +119,8 @@ $total_abandon = $abandoned + $timeout;
 }
 
 
-$start_parts = split(" ", $start);
-$end_parts   = split(" ", $end);
+$start_parts = explode(" ", $start);
+$end_parts   = explode(" ", $end);
 
 ?>
 <body>
